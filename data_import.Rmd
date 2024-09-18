@@ -24,3 +24,18 @@ Printing in the console.
 litters_df
 ```
 
+```{r}
+head(litters_df)
+```
+
+```{r}
+tail(litters_df)
+```
+
+```{r}
+skimr::skim(litters_df)
+```
+
+## Options to read_csv
+
+Check out '?read_csv()' for more information
