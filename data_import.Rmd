@@ -12,9 +12,15 @@ library(tidyverse)
 Read in the litters dataset.
 
 ```{r}
-litter_df = read_csv("./data/FAS_litters.csv")
-litter_df = janitor::clean_names(litter_df)
+litters_df = read_csv("./data/FAS_litters.csv")
+litters_df = janitor::clean_names(litters_df)
 ```
 
+
 ## Take a look at the data
+
+Printing in the console.
+```{r}
+litters_df
+```
 
