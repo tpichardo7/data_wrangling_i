@@ -645,3 +645,81 @@ arrange(litters_df, pups_born_alive, gd0_weight)
     ## 10 Low7  #112                23.9        40.5          19               6
     ## # ℹ 39 more rows
     ## # ℹ 2 more variables: pups_dead_birth <dbl>, pups_survive <dbl>
+
+## `piping`
+
+Do NOT follow this data, this is NOT a good example of piping.
+
+``` r
+litters_df = read_csv("data/FAS_litters.csv", na = c("NA", ".", ""))
+```
+
+    ## Rows: 49 Columns: 8
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (2): Group, Litter Number
+    ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+litters_df = janitor:: clean_names(litters_df)
+
+litters_df_var = select(litters_df, -pups_born_alive)
+
+litters_with_filter = filter(litters_df_var, group == "Con7")
+
+litters_wt_gain = mutate(litters_with_filter, wt_gain = gd18_weight - gd0_weight)
+```
+
+This is an additional bad example.
+
+``` r
+filter(select(janitor::clean_names(read_csv("data/FAS_litters.csv", na = c("NA", ".", ""))), -pups_born_alive), group == "Con7")
+```
+
+    ## Rows: 49 Columns: 8
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (2): Group, Litter Number
+    ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+    ## # A tibble: 7 × 7
+    ##   group litter_number   gd0_weight gd18_weight gd_of_birth pups_dead_birth
+    ##   <chr> <chr>                <dbl>       <dbl>       <dbl>           <dbl>
+    ## 1 Con7  #85                   19.7        34.7          20               4
+    ## 2 Con7  #1/2/95/2             27          42            19               0
+    ## 3 Con7  #5/5/3/83/3-3         26          41.4          19               0
+    ## 4 Con7  #5/4/2/95/2           28.5        44.1          19               1
+    ## 5 Con7  #4/2/95/3-3           NA          NA            20               0
+    ## 6 Con7  #2/2/95/3-2           NA          NA            20               0
+    ## 7 Con7  #1/5/3/83/3-3/2       NA          NA            20               0
+    ## # ℹ 1 more variable: pups_survive <dbl>
+
+Follow this data, good example of piping.
+
+``` r
+litters_df = 
+  read_csv("data/FAS_litters.csv", na = c("NA", ".", "")) |> 
+  janitor::clean_names() |> 
+  select(-pups_born_alive) |> 
+  filter(group == "Con7") |> 
+  mutate(
+    wt_gain = 
+      gd18_weight - gd0_weight, 
+    group = str_to_lower(group)
+  )
+```
+
+    ## Rows: 49 Columns: 8
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (2): Group, Litter Number
+    ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.

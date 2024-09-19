@@ -130,3 +130,39 @@ arrange(litters_df, desc(gd0_weight))
 arrange(litters_df, pups_born_alive, gd0_weight)
 ```
 
+
+
+## `piping`
+
+Do NOT follow this data, this is NOT a good example of piping.
+```{r}
+litters_df = read_csv("data/FAS_litters.csv", na = c("NA", ".", ""))
+
+litters_df = janitor:: clean_names(litters_df)
+
+litters_df_var = select(litters_df, -pups_born_alive)
+
+litters_with_filter = filter(litters_df_var, group == "Con7")
+
+litters_wt_gain = mutate(litters_with_filter, wt_gain = gd18_weight - gd0_weight)
+```
+
+This is an additional bad example.
+```{r}
+filter(select(janitor::clean_names(read_csv("data/FAS_litters.csv", na = c("NA", ".", ""))), -pups_born_alive), group == "Con7")
+```
+
+Follow this data, good example of piping.
+```{r}
+litters_df = 
+  read_csv("data/FAS_litters.csv", na = c("NA", ".", "")) |> 
+  janitor::clean_names() |> 
+  select(-pups_born_alive) |> 
+  filter(group == "Con7") |> 
+  mutate(
+    wt_gain = 
+      gd18_weight - gd0_weight, 
+    group = str_to_lower(group)
+  )
+```
+
